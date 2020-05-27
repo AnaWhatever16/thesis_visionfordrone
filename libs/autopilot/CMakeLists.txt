@@ -21,3 +21,7 @@ find_package(catkin REQUIRED COMPONENTS  roscpp sensor_msgs std_msgs geometry_ms
 
 target_include_directories(autopilot PUBLIC ${catkin_INCLUDE_DIRS})
 target_link_libraries(autopilot LINK_PUBLIC ${catkin_LIBRARIES})
+
+# Eigen3
+find_package(Eigen3 REQUIRED)
+target_link_libraries(autopilot LINK_PUBLIC Eigen3::Eigen)

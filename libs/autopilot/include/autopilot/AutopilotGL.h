@@ -13,6 +13,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include <thread>
+#include <Eigen/Eigen>
 
 ///Class that abstract connection with UAL autopilot in simulation with Gazebo 
 /// @ingroup Ana_thesis
