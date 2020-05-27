@@ -4,7 +4,8 @@ project(anas_thesis)
 add_subdirectory(libs/autopilot)
 add_subdirectory(libs/vision)
 add_subdirectory(libs/realsense)
-#add_subdirectory(scripts)
+add_subdirectory(scripts/vision_examples)
+#add_subdirectory(scripts/autopilot_vision)
 
 # #########################################
 # ######			Documentation	   ######

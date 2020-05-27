@@ -10,9 +10,9 @@
 TemplateMatchThread::TemplateMatchThread(std::string _argv){
     templ_ = cv::imread(_argv, CV_LOAD_IMAGE_COLOR);
 
-    for (int i=0; i<3;i++){
+    for (int i=0; i<5;i++){
         cv::Mat scaledTemplate;
-        resize(templ_, scaledTemplate, cv::Size(), (1-i*0.45), (1-i*0.45));
+        resize(templ_, scaledTemplate, cv::Size(), (1-i*0.20), (1-i*0.20));
         templResize_.push_back(scaledTemplate.clone());
     }
 }
@@ -101,8 +101,8 @@ double TemplateMatchThread::matchThread(cv::Mat &_input, int _matchMethod){
     }
     
     //cvtColor(img_display, img_display, CV_RGB2BGR); //only for autopilot
-    //rectangle(img_display, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
-    //imshow(image_window, img_display);
+    rectangle(img_display, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
+    imshow(image_window, img_display);
 
     return maxVal_act;
 }

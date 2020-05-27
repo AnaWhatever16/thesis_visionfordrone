@@ -1,0 +1,9 @@
+# Template Matching
+add_executable(template_matching mainTemplMatch.cpp)
+target_link_libraries(template_matching LINK_PRIVATE vision)
+target_link_libraries(template_matching LINK_PRIVATE realsense)
+
+# Template Matching with threads
+add_executable(template_thread mainTemplMatch.cpp)
+target_link_libraries(template_thread LINK_PRIVATE vision)
+target_link_libraries(template_thread LINK_PRIVATE realsense)

@@ -9,9 +9,9 @@ TemplateMatching::TemplateMatching(std::string _argv){
     int i;
     templ_ = cv::imread(_argv, CV_LOAD_IMAGE_COLOR);
 
-    for (i=0; i<2;i++){
+    for (i=0; i<5;i++){
         cv::Mat scaledTemplate;
-        resize(templ_, scaledTemplate, cv::Size(), (1-i*0.5), (1-i*0.5));
+        resize(templ_, scaledTemplate, cv::Size(), (1-i*0.20), (1-i*0.20));
         templResize_.push_back(scaledTemplate);
     }
 }
@@ -78,10 +78,11 @@ void TemplateMatching::matchingMethod(cv::Mat &_input, int _matchMethod){
     //image(result) that represents the amount of matching made by the template 
     //in each point (more white=more matching)
     rectangle(img_display, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
-    rectangle(result, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
-    cvtColor(img_display, img_display, CV_RGB2BGR); //only for autopilot
+    //rectangle(result, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
+    //cvtColor(img_display, img_display, CV_RGB2BGR); //only for autopilot
     
     imshow(image_window, img_display);
-    imshow(result_window, result);
+    imshow("Template", templ_);
+    //imshow(result_window, result);
     return;
 }
