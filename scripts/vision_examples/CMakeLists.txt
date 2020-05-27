@@ -7,3 +7,8 @@ target_link_libraries(template_matching LINK_PRIVATE realsense)
 add_executable(template_thread mainTemplMatchThread.cpp)
 target_link_libraries(template_thread LINK_PRIVATE vision)
 target_link_libraries(template_thread LINK_PRIVATE realsense)
+
+# Feature Matching
+add_executable(features mainFeature.cpp)
+target_link_libraries(features LINK_PRIVATE vision)
+target_link_libraries(features LINK_PRIVATE realsense)

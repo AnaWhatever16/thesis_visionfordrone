@@ -23,34 +23,18 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/features2d.hpp>
 
-#include <aerox_suite/hal/RealSense/RealSenseCamera.h>
-#include <aerox_suite/state_estimation/algorithms/FeatureMatching.h>
+#include <realsense/RealSenseCamera.h>
+#include <vision/FeatureMatching.h>
 
 int main(int _argc, char **_argv){
 
-    RealSenseCamera realSenseCamera(0);
+    RealSenseCamera realSenseCamera(RealSenseCamera::RS_TYPE::D435);
     FeatureMatching featureDetection(_argv[1]);
+    cv::Mat frame;
 
-   if (featureDetection.templ_.empty() )
-    {
-        std::cout << "Could not open or find the image!\n" << std::endl;
-        std::cout << "Usage: " << _argv[0] << " <Input image>" << std::endl;
-        return -1;
-    }
-    // std::vector<cv::KeyPoint> keypoints_img;
-    // cv::Mat descriptors_img;
-
-    while(true){
-        realSenseCamera.setImage();
-        featureDetection.method(realSenseCamera.img);
-        //featureDetection.detection(realSenseCamera.img, keypoints_img, descriptors_img);
-        // //-- Draw keypoints
-        // cv::Mat img_keypoints;
-        // drawKeypoints(realSenseCamera.img, keypoints_img, img_keypoints);
-        // //-- Show detected (drawn) keypoints
-        // imshow("ORB Keypoints", img_keypoints );
-        //featureDetection.matching(descriptors_img, keypoints_img, realSenseCamera.img);
-        cv::waitKey(3);
+    while((char)27!=cv::waitKey(1)){
+        realSenseCamera>>frame;
+        featureDetection.method(frame);
     }
     cv::destroyAllWindows();
     return 0;

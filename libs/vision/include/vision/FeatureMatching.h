@@ -31,7 +31,7 @@ class FeatureMatching{
 
     private:
         cv::Mat templ_;
-        int minHessian = 5000; //400 realsense
+        int minHessian = 1000; //400 realsense 1000 drone
         std::vector<cv::KeyPoint> keypointsTempl_;
         cv::Mat descriptorsTempl_;
 
