@@ -40,35 +40,35 @@ bool KCFTracker::update(cv::Mat &_frame){
         cv::waitKey(0);
         return 0;
     }
-    //cv::rectangle(_frame, roi_, cv::Scalar(0, 255, 0), 2, 1);
+    cv::rectangle(_frame, roi_, cv::Scalar(0, 255, 0), 2, 1);
 
-    std::vector<cv::Point2f> scene_corners(4);
-    scene_corners = calcRoi(); 
+    // std::vector<cv::Point2f> scene_corners(4);
+    // scene_corners = calcRoi(); 
 
-    cv::Mat scene;
-    scene=_frame(cv::Range(scene_corners[0].y, scene_corners[2].y), 
-                    cv::Range(scene_corners[0].x, scene_corners[2].x));
+    // cv::Mat scene;
+    // scene=_frame(cv::Range(scene_corners[0].y, scene_corners[2].y), 
+    //                 cv::Range(scene_corners[0].x, scene_corners[2].x));
 
-    std::vector<cv::Vec4i> vecActual;
-    vecActual = computeCandidateLines(scene);
-    anglePos_ = angle->detect(vecActual, scene);
+    // std::vector<cv::Vec4i> vecActual;
+    // vecActual = computeCandidateLines(scene);
+    // anglePos_ = angle->detect(vecActual, scene);
 
-    //cv::waitKey(3); //for debug in case we hace more images showing in windows
+    // //cv::waitKey(3); //for debug in case we hace more images showing in windows
 
-    std::cout << "Error angle: " << anglePos_ << std::endl;
+    // std::cout << "Error angle: " << anglePos_ << std::endl;
 
-    //Calculate centroid of reference
-    cv::Moments mu;
-    mu = moments(scene_corners);
-    ref_= cv::Point2f (mu.m10/mu.m00, mu.m01/mu.m00);
+    // //Calculate centroid of reference
+    // cv::Moments mu;
+    // mu = moments(scene_corners);
+    // ref_= cv::Point2f (mu.m10/mu.m00, mu.m01/mu.m00);
 
-    cv::circle(_frame, ref_, 1, cv::Scalar(0, 255, 0), 5);
+    // cv::circle(_frame, ref_, 1, cv::Scalar(0, 255, 0), 5);
 
-    //Calculate image center 
-    float cx = _frame.cols/2;
-    float cy = _frame.rows/2;        
-    imgCenter_= cv::Point2f(cx , cy);
-    cv::circle(_frame, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
+    // //Calculate image center 
+    // float cx = _frame.cols/2;
+    // float cy = _frame.rows/2;        
+    // imgCenter_= cv::Point2f(cx , cy);
+    // cv::circle(_frame, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
 
     cv::imshow("tracker",_frame);
     return 1;
