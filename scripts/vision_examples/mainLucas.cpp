@@ -25,14 +25,22 @@
 #include <vision/LucasMethod.h>
 
 int main(int _argc, char **_argv){
-    cv::Mat image;
+    cv::Mat frame;
     RealSenseCamera realSenseCamera(RealSenseCamera::RS_TYPE::D435);
-    realSenseCamera>>image;
-    LucasMethod lucas(image);
+    
+    std::cout << "Press ESC when image is ready for detection" << std::endl;
 
     while((char)27!=cv::waitKey(1)){
-        realSenseCamera>>image;
-        lucas.method(image);
+        realSenseCamera>>frame;
+        cv::imshow("RealSense Image", frame); 
+    }
+    cv::destroyWindow("RealSense Image");
+
+    LucasMethod lucas(frame);
+
+    while((char)27!=cv::waitKey(1)){
+        realSenseCamera>>frame;
+        lucas.method(frame);
     }
     cv::destroyAllWindows();
     return 0;
