@@ -59,12 +59,14 @@ void LucasMethod::method(cv::Mat &_input){
 
 std::vector<cv::Point2f> LucasMethod::goodTrackingFeatures(std::vector<cv::Point2f> &_p0){
     std::vector<cv::Point2f> pROI;
-    cv::Rect2d roi = cv::selectROI(oldFrame_, false);
+    cv::Rect2d roi = cv::selectROI("ROI", oldFrame_, true, false);
 
     while(roi.width==0 || roi.height==0){
         std::cout << "Try again" << std::endl;
-        roi = selectROI(oldFrame_, false);
+        roi = selectROI("ROI", oldFrame_, false);
     }
+
+    cv::destroyWindow("ROI");
 
     cv::Point2f tl = roi.tl();
     cv::Point2f br = roi.br(); 
