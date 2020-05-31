@@ -13,11 +13,16 @@ class LucasMethod{
         /// Draws optical flow of initial features.
         /// \param _input frame to analyze.
         void method(cv::Mat &_input);
+
         
     private:
-        std::vector<cv::Scalar> colors;
-        cv::Mat old_frame, old_gray;
-        std::vector<cv::Point2f> p0, p1;
+        std::vector<cv::Scalar> colors_;
+        cv::Mat oldFrame_, oldGray_;
+        std::vector<cv::Point2f> p0_;
         cv::Mat mask;
         cv::TermCriteria criteria;
+
+    private:
+        std::vector<cv::Point2f> goodTrackingFeatures(std::vector<cv::Point2f> &_p0);
+        void drawBoundBox(std::vector<cv::Point2f> &_p0, cv::Mat &_frame);
 };

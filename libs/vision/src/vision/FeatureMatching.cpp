@@ -2,12 +2,12 @@
 
 FeatureMatching::FeatureMatching(std::string _argv){
     templ_ = cv::imread(_argv, CV_LOAD_IMAGE_GRAYSCALE);
-    detector = cv::ORB::create( minHessian );
+    detector_ = cv::ORB::create( minHessian );
     /// Detection of template's features
     detection(templ_, keypointsTempl_, descriptorsTempl_);
 
     //Matcher without filter
-    matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
+    matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
     //Matcher with filter
     //matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
 }
@@ -22,7 +22,7 @@ void FeatureMatching::method(cv::Mat &_input){
 void FeatureMatching::detection(cv::Mat &_input,std::vector<cv::KeyPoint> &_keypoints, cv::Mat &_descriptors)
 {
     //-- Step 1: Detect the keypoints using ORB Detector
-    detector->detectAndCompute(_input, cv::noArray(), _keypoints, _descriptors);
+    detector_->detectAndCompute(_input, cv::noArray(), _keypoints, _descriptors);
 }
 
 void FeatureMatching::matching(cv::Mat &_img){
@@ -30,7 +30,7 @@ void FeatureMatching::matching(cv::Mat &_img){
     // ORB uses Hamming distance to determine features
     if (descriptorsImg_.rows>12){
         std::vector< std::vector<cv::DMatch> > knn_matches;
-        matcher->knnMatch(descriptorsTempl_, descriptorsImg_, knn_matches, 2 );
+        matcher_->knnMatch(descriptorsTempl_, descriptorsImg_, knn_matches, 2 );
         //-- Filter matches using the Lowe's ratio test
         const float ratio_thresh = 0.7f; //0.77f
         std::vector<cv::DMatch> good_matches;
@@ -83,7 +83,7 @@ void FeatureMatching::drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::M
     scene_corners[0]=ctl; scene_corners[1]= ctr;
     scene_corners[2]= cbr; scene_corners[3]= cbl;
 
-    rectangle( _imgMatches, ctl + cv::Point2f( templ_.cols, 0), cbr + cv::Point2f( templ_.cols, 0), cv::Scalar(0, 255, 0), 4);
+    rectangle( _imgMatches, bound, cv::Scalar(0, 255, 0), 4);
 
     //Calculate centroid
     cv::Moments mu;

@@ -18,7 +18,12 @@ add_executable(features mainFeature.cpp)
 target_link_libraries(features LINK_PRIVATE vision)
 target_link_libraries(features LINK_PRIVATE realsense)
 
-# Feature Matching
+# KCF 
 add_executable(KCF mainKCF.cpp)
 target_link_libraries(KCF LINK_PRIVATE vision)
 target_link_libraries(KCF LINK_PRIVATE realsense)
+
+# Optical Flow Lucas-Kanade
+add_executable(lucas mainLucas.cpp)
+target_link_libraries(lucas LINK_PRIVATE vision)
+target_link_libraries(lucas LINK_PRIVATE realsense)

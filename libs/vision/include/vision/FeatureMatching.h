@@ -38,8 +38,8 @@ class FeatureMatching{
         std::vector<cv::KeyPoint> keypointsImg_;
         cv::Mat descriptorsImg_;
 
-        cv::Ptr<cv::ORB> detector;
-        cv::Ptr<cv::DescriptorMatcher> matcher;
+        cv::Ptr<cv::ORB> detector_;
+        cv::Ptr<cv::DescriptorMatcher> matcher_;
 
         cv::Point2f ref_;
         cv::Point2f imgCenter_;

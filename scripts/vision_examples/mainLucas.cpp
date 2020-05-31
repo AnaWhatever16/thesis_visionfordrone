@@ -21,19 +21,18 @@
 #include <opencv2/highgui.hpp>
 #include <iostream>
 
-#include <aerox_suite/hal/RealSense/RealSenseCamera.h>
-#include <aerox_suite/state_estimation/algorithms/LucasMethod.h>
+#include <realsense/RealSenseCamera.h>
+#include <vision/LucasMethod.h>
 
 int main(int _argc, char **_argv){
     cv::Mat image;
-    RealSenseCamera realSenseCamera(0);
+    RealSenseCamera realSenseCamera(RealSenseCamera::RS_TYPE::D435);
     realSenseCamera>>image;
     LucasMethod lucas(image);
 
-    while(true){
+    while((char)27!=cv::waitKey(1)){
         realSenseCamera>>image;
         lucas.method(image);
-        cv::waitKey(3);
     }
     cv::destroyAllWindows();
     return 0;
