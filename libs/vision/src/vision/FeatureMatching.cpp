@@ -83,7 +83,7 @@ void FeatureMatching::drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::M
     scene_corners[0]=ctl; scene_corners[1]= ctr;
     scene_corners[2]= cbr; scene_corners[3]= cbl;
 
-    rectangle( _imgMatches, bound, cv::Scalar(0, 255, 0), 4);
+    rectangle( _imgMatches, ctl + cv::Point2f( templ_.cols, 0), cbr + cv::Point2f( templ_.cols, 0), cv::Scalar(0, 255, 0), 4);
 
     //Calculate centroid
     cv::Moments mu;

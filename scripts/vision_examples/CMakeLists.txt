@@ -3,6 +3,10 @@ add_executable(permut mainCirculantMatrix.cpp)
 target_link_libraries(permut LINK_PRIVATE vision)
 target_link_libraries(permut LINK_PRIVATE realsense)
 
+# Example Features
+add_executable(exfeat mainExampleFeatures.cpp)
+target_link_libraries(exfeat LINK_PRIVATE realsense)
+
 # Template Matching
 add_executable(template_matching mainTemplMatch.cpp)
 target_link_libraries(template_matching LINK_PRIVATE vision)

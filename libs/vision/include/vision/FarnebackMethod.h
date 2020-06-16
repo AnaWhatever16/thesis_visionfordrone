@@ -13,5 +13,5 @@ class FarnebackMethod{
         /// \param _input frame to analyze.
         void method(cv::Mat &_input);
     private:
-        cv::Mat prvs;
+        cv::Mat prvs_;
 };

@@ -78,11 +78,11 @@ void TemplateMatching::matchingMethod(cv::Mat &_input, int _matchMethod){
     //image(result) that represents the amount of matching made by the template 
     //in each point (more white=more matching)
     rectangle(img_display, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
-    //rectangle(result, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
+    rectangle(result, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
     //cvtColor(img_display, img_display, CV_RGB2BGR); //only for autopilot
     
     imshow(image_window, img_display);
     imshow("Template", templ_);
-    //imshow(result_window, result);
+    imshow("Score result", result);
     return;
 }
