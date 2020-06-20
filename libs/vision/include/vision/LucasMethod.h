@@ -19,8 +19,8 @@ class LucasMethod{
         std::vector<cv::Scalar> colors_;
         cv::Mat oldFrame_, oldGray_;
         std::vector<cv::Point2f> p0_;
-        cv::Mat mask;
-        cv::TermCriteria criteria;
+        cv::Mat mask_;
+        cv::TermCriteria criteria_;
 
     private:
         std::vector<cv::Point2f> goodTrackingFeatures(std::vector<cv::Point2f> &_p0);

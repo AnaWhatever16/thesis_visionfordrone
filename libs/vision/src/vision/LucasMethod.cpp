@@ -22,8 +22,8 @@ LucasMethod::LucasMethod(cv::Mat &_input){
     cv::goodFeaturesToTrack(oldGray_, p0Aux, 100, 0.3, 7, cv::Mat(), 7, false, 0.04);
     p0_ = goodTrackingFeatures(p0Aux);
     // Create a mask image for drawing purposes
-    mask = cv::Mat::zeros(oldFrame_.size(), oldFrame_.type());
-    criteria = cv::TermCriteria((cv::TermCriteria::COUNT) + (cv::TermCriteria::EPS), 50, 0.03); //originally 10, 0.03
+    mask_ = cv::Mat::zeros(oldFrame_.size(), oldFrame_.type());
+    criteria_ = cv::TermCriteria((cv::TermCriteria::COUNT) + (cv::TermCriteria::EPS), 50, 0.03); //originally 10, 0.03
 }
 
 void LucasMethod::method(cv::Mat &_input){
@@ -34,7 +34,7 @@ void LucasMethod::method(cv::Mat &_input){
     // calculate optical flow
     std::vector<uchar> status;
     std::vector<float> err;
-    cv::calcOpticalFlowPyrLK(oldGray_, frame_gray, p0_, p1, status, err, cv::Size(15,15), 2, criteria);
+    cv::calcOpticalFlowPyrLK(oldGray_, frame_gray, p0_, p1, status, err, cv::Size(15,15), 2, criteria_);
     std::vector<cv::Point2f> good_new;
     for(uint i = 0; i < p0_.size(); i++)
     {
@@ -42,13 +42,13 @@ void LucasMethod::method(cv::Mat &_input){
         if(status[i] == 1) {
             good_new.push_back(p1[i]);
             // draw the tracks
-            cv::line(mask,p1[i], p0_[i], colors_[i], 2);
+            cv::line(mask_,p1[i], p0_[i], colors_[i], 2);
             cv::circle(frame, p1[i], 5, colors_[i], -1);
         }
     }
 
     cv::Mat img;
-    cv::add(frame, mask, img);
+    cv::add(frame, mask_, img);
     drawBoundBox(good_new, img);
     cv::imshow("Frame", img);
 

@@ -1,3 +1,8 @@
+# Use of camera
+add_executable(cam mainCam.cpp)
+target_link_libraries(cam LINK_PRIVATE realsense)
+
+
 # Circulant Matrix example
 add_executable(permut mainCirculantMatrix.cpp)
 target_link_libraries(permut LINK_PRIVATE vision)

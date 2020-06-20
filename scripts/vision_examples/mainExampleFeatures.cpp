@@ -26,7 +26,6 @@ int main( int argc, char* argv[] )
         drawKeypoints( frame, keypoints, img_keypoints );
         //-- Show detected (drawn) keypoints
         imshow("SURF Keypoints", img_keypoints );
-        waitKey(3);
     }
     return 0;
 }
