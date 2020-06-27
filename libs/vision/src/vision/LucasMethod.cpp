@@ -18,7 +18,7 @@ LucasMethod::LucasMethod(cv::Mat &_input){
     // Take first frame and find corners in it
     oldFrame_=_input;
     std::vector<cv::Point2f> p0Aux;
-    cv::cvtColor(oldFrame_, oldGray_, CV_BGR2GRAY);
+    cv::cvtColor(oldFrame_, oldGray_, cv::COLOR_BGR2GRAY);
     cv::goodFeaturesToTrack(oldGray_, p0Aux, 100, 0.3, 7, cv::Mat(), 7, false, 0.04);
     p0_ = goodTrackingFeatures(p0Aux);
     // Create a mask image for drawing purposes

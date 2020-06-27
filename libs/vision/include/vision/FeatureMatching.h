@@ -1,3 +1,23 @@
+//---------------------------------------------------------------------------------------------------------------------
+//  Vertical Engineering Solutions
+//---------------------------------------------------------------------------------------------------------------------
+// 
+//  Copyright 2020 Vertical Engineering Solutions  - All Rights Reserved
+// 
+//  Unauthorized copying of this file, via any medium is strictly prohibited Proprietary and confidential.
+// 
+//  All information contained herein is, and remains the property of Vertical Engineering Solutions.  The 
+//  intellectual and technical concepts contained herein are proprietary to Vertical Engineering Solutions 
+//  and its suppliers and may be covered by UE and Foreign Patents, patents in process, and are protected 
+//  by trade secret or copyright law. Dissemination of this information or reproduction of this material is 
+//  strictly forbidden unless prior written permission is obtained from Vertical Engineering Solutions.
+//
+//---------------------------------------------------------------------------------------------------------------------
+//
+//  Maintainer: acasado@vengineerings.com
+//
+//---------------------------------------------------------------------------------------------------------------------
+
 #include <opencv2/core.hpp>
 #include <opencv2/features2d.hpp>
 #include "opencv2/core/core.hpp"
@@ -7,7 +27,7 @@
 #include <opencv2/imgproc.hpp>
 
 /// Class for implementation of the algorithm of Feature Matching.
-/// @ingroup Ana_thesis
+/// @ingroup aerox_vision
 class FeatureMatching{
     public: 
         /// Constructor. It takes the template given in command line,
@@ -15,6 +35,12 @@ class FeatureMatching{
         /// and analyzes template features (creates its keypoints) 
         /// \param _argv path to image
         FeatureMatching(std::string _argv);
+
+        /// Constructor. You choose the template from an image,
+        /// creates the detector and matcher
+        /// and analyzes template features (creates its keypoints) 
+        /// \param _argv path to image
+        FeatureMatching(cv::Mat &_frame);
 
         /// Function where detection of the image keypoints are detected 
         /// and matches with template are drawn. 
@@ -29,9 +55,11 @@ class FeatureMatching{
         /// \return center of image
         cv::Point2f getPos(){return imgCenter_;}
 
+        cv::Rect getROI(){return bound_;}
+
     private:
         cv::Mat templ_;
-        int minHessian = 1000; //400 realsense 1000 drone
+        int minHessian = 5000; //400 realsense
         std::vector<cv::KeyPoint> keypointsTempl_;
         cv::Mat descriptorsTempl_;
 
@@ -48,5 +76,7 @@ class FeatureMatching{
         void detection(cv::Mat &_input, std::vector<cv::KeyPoint> &_keypoints, cv::Mat &_descriptors);
         void matching(cv::Mat &_img);
         void drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::Mat &_imgMatches);
+        cv::Mat selectTemplate(cv::Mat &_frame);
+        cv::Rect bound_;
     
 };

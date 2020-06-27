@@ -8,7 +8,7 @@
 #include <iostream>
 
 TemplateMatchThread::TemplateMatchThread(std::string _argv){
-    templ_ = cv::imread(_argv, CV_LOAD_IMAGE_COLOR);
+    templ_ = cv::imread(_argv, cv::IMREAD_COLOR);
 
     for (int i=0; i<5;i++){
         cv::Mat scaledTemplate;
@@ -100,7 +100,7 @@ double TemplateMatchThread::matchThread(cv::Mat &_input, int _matchMethod){
         }
     }
     
-    //cvtColor(img_display, img_display, CV_RGB2BGR); //only for autopilot
+    //cvtColor(img_display, img_display, cv::COLOR_RGB2BGR); //only for autopilot
     rectangle(img_display, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
     imshow(image_window, img_display);
 

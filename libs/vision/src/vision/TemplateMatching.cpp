@@ -7,7 +7,7 @@
 
 TemplateMatching::TemplateMatching(std::string _argv){
     int i;
-    templ_ = cv::imread(_argv, CV_LOAD_IMAGE_COLOR);
+    templ_ = cv::imread(_argv, cv::IMREAD_COLOR);
 
     for (i=0; i<5;i++){
         cv::Mat scaledTemplate;
@@ -79,7 +79,7 @@ void TemplateMatching::matchingMethod(cv::Mat &_input, int _matchMethod){
     //in each point (more white=more matching)
     rectangle(img_display, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
     rectangle(result, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
-    //cvtColor(img_display, img_display, CV_RGB2BGR); //only for autopilot
+    //cvtColor(img_display, img_display, cv::COLOR_RGB2BGR); //only for autopilot
     
     imshow(image_window, img_display);
     imshow("Template", templ_);

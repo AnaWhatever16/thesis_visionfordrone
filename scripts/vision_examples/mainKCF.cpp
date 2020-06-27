@@ -20,7 +20,7 @@ int main(int _argc, char **_argv){
     }
     cv::destroyWindow("RealSense Image");
 
-    KCFTracker tracker(frame);
+    KCFTracker tracker(frame, 0);
 
     while((char)27!=cv::waitKey(1)){
         realSenseCamera>>frame;

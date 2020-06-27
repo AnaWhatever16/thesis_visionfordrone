@@ -1,7 +1,42 @@
+//---------------------------------------------------------------------------------------------------------------------
+//  Vertical Engineering Solutions
+//---------------------------------------------------------------------------------------------------------------------
+// 
+//  Copyright 2020 Vertical Engineering Solutions  - All Rights Reserved
+// 
+//  Unauthorized copying of this file, via any medium is strictly prohibited Proprietary and confidential.
+// 
+//  All information contained herein is, and remains the property of Vertical Engineering Solutions.  The 
+//  intellectual and technical concepts contained herein are proprietary to Vertical Engineering Solutions 
+//  and its suppliers and may be covered by UE and Foreign Patents, patents in process, and are protected 
+//  by trade secret or copyright law. Dissemination of this information or reproduction of this material is 
+//  strictly forbidden unless prior written permission is obtained from Vertical Engineering Solutions.
+//
+//---------------------------------------------------------------------------------------------------------------------
+//
+//  Maintainer: acasado@vengineerings.com
+//
+//---------------------------------------------------------------------------------------------------------------------
+
 #include <vision/FeatureMatching.h>
+#include <opencv2/tracking.hpp>
+#include <opencv2/video.hpp>
+#include <iostream>
 
 FeatureMatching::FeatureMatching(std::string _argv){
-    templ_ = cv::imread(_argv, CV_LOAD_IMAGE_GRAYSCALE);
+    templ_ = cv::imread(_argv, cv::IMREAD_GRAYSCALE);
+    detector_ = cv::ORB::create( minHessian );
+    /// Detection of template's features
+    detection(templ_, keypointsTempl_, descriptorsTempl_);
+
+    //Matcher without filter
+    matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
+    //Matcher with filter
+    //matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
+}
+
+FeatureMatching::FeatureMatching(cv::Mat &_frame){
+    templ_ = selectTemplate(_frame);
     detector_ = cv::ORB::create( minHessian );
     /// Detection of template's features
     detection(templ_, keypointsTempl_, descriptorsTempl_);
@@ -53,10 +88,10 @@ void FeatureMatching::matching(cv::Mat &_img){
         imgCenter_= cv::Point2f(cx , cy);
         cv::circle(img_matches, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
 
-        imshow("Resultado", img_matches );
+        //imshow("Resultado", img_matches );
     }
     else{
-        imshow("Resultado", _img);
+        //imshow("Resultado", _img);
     }
 }
 void FeatureMatching::drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::Mat &_imgMatches){
@@ -72,10 +107,10 @@ void FeatureMatching::drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::M
 
     std::vector<cv::Point2f> hull;
     cv::convexHull(scene, hull, true);
-    cv::Rect bound = cv::boundingRect(hull);
-    cv::Point2f ctl = bound.tl();
-    cv::Point2f cbr = bound.br();
-    cv::Size siz = bound.size();
+    bound_ = cv::boundingRect(hull);
+    cv::Point2f ctl = bound_.tl();
+    cv::Point2f cbr = bound_.br();
+    cv::Size siz = bound_.size();
     cv::Point2f cbl = ctl + cv::Point2f(0, siz.height); 
     cv::Point2f ctr = ctl + cv::Point2f(siz.width, 0);
 
@@ -93,4 +128,19 @@ void FeatureMatching::drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::M
     ref_= c + cv::Point2f( templ_.cols, 0);
 
     cv::circle(_imgMatches, ref_, 1, cv::Scalar(0, 0, 0), 5);
+}
+
+cv::Mat FeatureMatching::selectTemplate(cv::Mat &_frame){
+    cv::Rect2d roi = cv::selectROI("ROI", _frame, true, false);
+
+    while(roi.width==0 || roi.height==0){
+        std::cout << "Try again" << std::endl;
+        roi = selectROI("ROI",_frame, false);
+    }
+
+    cv::destroyWindow("ROI");
+
+    cv::Mat newTemp = cv::Mat(_frame, roi);
+
+    return newTemp;
 }

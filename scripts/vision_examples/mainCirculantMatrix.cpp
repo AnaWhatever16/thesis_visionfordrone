@@ -5,7 +5,7 @@
 
 int main(int _argc, char **_argv){
 
-    cv::Mat frame = cv::imread(_argv[1], CV_LOAD_IMAGE_COLOR);
+    cv::Mat frame = cv::imread(_argv[1], cv::IMREAD_COLOR);
     cv::Mat first = cv::Mat(frame, cv::Range(frame.rows/5, frame.rows), cv::Range(0, frame.cols)); 
     cv::Mat second = cv::Mat(frame, cv::Range(frame.rows*2/5, frame.rows), cv::Range(0, frame.cols));
     cv::Mat third = cv::Mat(frame, cv::Range(frame.rows*3/5, frame.rows), cv::Range(0, frame.cols));

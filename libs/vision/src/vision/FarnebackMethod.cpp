@@ -7,14 +7,14 @@
 
 FarnebackMethod::FarnebackMethod(cv::Mat &_input){
     cv::Mat frame1=_input;
-    cv::cvtColor(frame1, prvs_, CV_BGR2GRAY);
+    cv::cvtColor(frame1, prvs_, cv::COLOR_BGR2GRAY);
 }
 
 void FarnebackMethod::method(cv::Mat &_input)
 {
     cv::Mat frame2, next;
     frame2=_input;
-    cv::cvtColor(frame2, next, CV_BGR2GRAY);
+    cv::cvtColor(frame2, next, cv::COLOR_BGR2GRAY);
     cv::Mat flow(prvs_.size(), CV_32FC2);
     cv::calcOpticalFlowFarneback(prvs_, next, flow, 0.5, 3, 15, 3, 5, 1.2, 0);
     // visualization
@@ -31,7 +31,7 @@ void FarnebackMethod::method(cv::Mat &_input)
     _hsv[2] = magn_norm;
     cv::merge(_hsv, 3, hsv);
     hsv.convertTo(hsv8, CV_8U, 255.0);
-    cv::cvtColor(hsv8, bgr, CV_HSV2BGR);
+    cv::cvtColor(hsv8, bgr, cv::COLOR_HSV2BGR);
     cv::imshow("frame2", bgr);
     cv::waitKey(30);
     prvs_ = next;

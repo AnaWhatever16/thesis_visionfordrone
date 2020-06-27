@@ -55,7 +55,7 @@ cv::Mat RealSenseCamera::queryImage(){
     cv::Mat img_prev(cv::Size(w, h), CV_8UC3, (void*)color.get_data(), cv::Mat::AUTO_STEP);
     //Realsense camera is in BGR so we need to change it to RGB
     cv::Mat frame;
-    cvtColor(img_prev, frame, CV_RGB2BGR);
+    cvtColor(img_prev, frame, cv::COLOR_RGB2BGR);
     return frame;
 }
 

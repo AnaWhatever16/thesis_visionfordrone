@@ -1,13 +1,52 @@
+//---------------------------------------------------------------------------------------------------------------------
+//  Vertical Engineering Solutions
+//---------------------------------------------------------------------------------------------------------------------
+// 
+//  Copyright 2020 Vertical Engineering Solutions  - All Rights Reserved
+// 
+//  Unauthorized copying of this file, via any medium is strictly prohibited Proprietary and confidential.
+// 
+//  All information contained herein is, and remains the property of Vertical Engineering Solutions.  The 
+//  intellectual and technical concepts contained herein are proprietary to Vertical Engineering Solutions 
+//  and its suppliers and may be covered by UE and Foreign Patents, patents in process, and are protected 
+//  by trade secret or copyright law. Dissemination of this information or reproduction of this material is 
+//  strictly forbidden unless prior written permission is obtained from Vertical Engineering Solutions.
+//
+//---------------------------------------------------------------------------------------------------------------------
+//
+//  Maintainer: acasado@vengineerings.com
+//
+//---------------------------------------------------------------------------------------------------------------------
+
 #include <vision/KCFTracker.h>
+#include <vision/FeatureMatching.h>
 
-KCFTracker::KCFTracker(cv::Mat &_frame){
+KCFTracker::KCFTracker(cv::Mat &_frame, bool _angle){
 
-    tracker_ = cv::TrackerKCF::createTracker();
+    tracker_ = cv::TrackerKCF::create();
 
     while(!selectRef(_frame)){
         std::cout<<"Try again"<<std::endl;
     }
-    std::cout<<"ROI selected"<<std::endl;
+    std::cout<<"ROI selected"<<std::endl;            
+
+    angle_ = _angle;
+    additionalConstructorCalculations(_frame);
+}
+
+KCFTracker::KCFTracker(cv::Mat &_frame, bool _angle, std::string _template){
+    
+    tracker_ = cv::TrackerKCF::create();
+
+    FeatureMatching initDetect(_template);
+    initDetect.method(_frame);
+    roi_= initDetect.getROI();
+    
+    angle_=_angle;
+    additionalConstructorCalculations(_frame);
+}
+
+void KCFTracker::additionalConstructorCalculations(cv::Mat &_frame){
 
     std::vector<cv::Point2f> scene_corners(4);
     scene_corners = calcRoi();
@@ -19,12 +58,19 @@ KCFTracker::KCFTracker(cv::Mat &_frame){
 
     vecInit_ = computeCandidateLines(scene);
     frameInit_ = scene;
-    angle = new AngleDetect(frameInit_, vecInit_);
+    angleDetect = new AngleDetect(frameInit_, vecInit_);
 
     tracker_->init(_frame,roi_);
+
+    //Calculate image center to set reference
+    float cx = _frame.cols/2;
+    float cy = _frame.rows/2;        
+    imgCenter_= cv::Point2f(cx , cy);
+    cv::circle(_frame, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
+
     printf("Start the tracking process, press ESC to quit.\n");
 
-}
+}        
 
 bool KCFTracker::selectRef(cv::Mat &_frame){
     roi_=cv::selectROI("tracker", _frame, true, false);
@@ -42,35 +88,38 @@ bool KCFTracker::update(cv::Mat &_frame){
     }
     cv::rectangle(_frame, roi_, cv::Scalar(0, 255, 0), 2, 1);
 
-    // std::vector<cv::Point2f> scene_corners(4);
-    // scene_corners = calcRoi(); 
+    std::vector<cv::Point2f> scene_corners(4);
+    scene_corners = calcRoi(); 
 
-    // cv::Mat scene;
-    // scene=_frame(cv::Range(scene_corners[0].y, scene_corners[2].y), 
-    //                 cv::Range(scene_corners[0].x, scene_corners[2].x));
+    if(angle_){
 
-    // std::vector<cv::Vec4i> vecActual;
-    // vecActual = computeCandidateLines(scene);
-    // anglePos_ = angle->detect(vecActual, scene);
+        cv::Mat scene;
+        scene=_frame(cv::Range(scene_corners[0].y, scene_corners[2].y), 
+                        cv::Range(scene_corners[0].x, scene_corners[2].x));
 
-    // //cv::waitKey(3); //for debug in case we hace more images showing in windows
+        std::vector<cv::Vec4i> vecActual;
+        vecActual = computeCandidateLines(scene);
+        anglePos_ = angleDetect->detect(vecActual, scene);
 
-    // std::cout << "Error angle: " << anglePos_ << std::endl;
+        //cv::waitKey(3); //for debug in case we hace more images showing in windows
 
-    // //Calculate centroid of reference
-    // cv::Moments mu;
-    // mu = moments(scene_corners);
-    // ref_= cv::Point2f (mu.m10/mu.m00, mu.m01/mu.m00);
+        std::cout << "Error angle: " << anglePos_ << std::endl;
 
-    // cv::circle(_frame, ref_, 1, cv::Scalar(0, 255, 0), 5);
+    }
 
-    // //Calculate image center 
-    // float cx = _frame.cols/2;
-    // float cy = _frame.rows/2;        
-    // imgCenter_= cv::Point2f(cx , cy);
-    // cv::circle(_frame, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
+    //Calculate centroid of object
+    cv::Moments mu;
+    mu = moments(scene_corners);
+    objectSelected_= cv::Point2f (mu.m10/mu.m00, mu.m01/mu.m00);
+    cv::circle(_frame, objectSelected_, 1, cv::Scalar(0, 255, 0), 5);
 
-    cv::imshow("tracker",_frame);
+    //Calculate image center 
+    float cx = _frame.cols/2;
+    float cy = _frame.rows/2;        
+    imgCenter_= cv::Point2f(cx , cy);
+    cv::circle(_frame, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
+
+    cv::imshow("tracker",_frame); // REMEMBER TO UNCOMMENT IF WE WANT IMAGE TO SHOW
     return 1;
 }
 
