@@ -36,3 +36,8 @@ target_link_libraries(KCF LINK_PRIVATE realsense)
 add_executable(lucas mainLucas.cpp)
 target_link_libraries(lucas LINK_PRIVATE vision)
 target_link_libraries(lucas LINK_PRIVATE realsense)
+
+# Optical Flow Farneback
+add_executable(farne mainFanerback.cpp)
+target_link_libraries(farne LINK_PRIVATE vision)
+target_link_libraries(farne LINK_PRIVATE realsense)

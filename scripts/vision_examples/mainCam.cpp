@@ -8,6 +8,8 @@ int main(int _argc, char **_argv){
         realSense>>frame;
         imshow("Camera Example", frame);
     }
+
+    cv::imwrite("/home/ana/Desktop/targetVision.jpg", frame);    
     return 0;
 
 }

@@ -42,6 +42,7 @@ int main(int _argc, char **_argv){
         realSenseCamera>>frame;
         lucas.method(frame);
     }
+
     cv::destroyAllWindows();
     return 0;
 }

@@ -21,19 +21,23 @@
 #include <opencv2/highgui.hpp>
 #include <iostream>
 
-#include <aerox_suite/hal/RealSense/RealSenseCamera.h>
-#include <aerox_suite/state_estimation/algorithms/FarnebackMethod.h>
+#include <vision/FarnebackMethod.h>
 
 int main(int _argc, char **_argv){
 
-    cv::Mat image;
-    RealSenseCamera realSenseCamera(0);
-    realSenseCamera>>image;
-    FarnebackMethod farneback(image);
+    cv::VideoCapture camera(0);
+    if (!camera.isOpened()) {
+        std::cerr << "ERROR: Could not open camera" << std::endl;
+        return 1;
+    }
+
+    cv::Mat frame;
+    camera >> frame;
+    FarnebackMethod farneback(frame);
     
     while(true){
-        realSenseCamera>>image;
-        farneback.method(image);
+        camera>>frame;
+        farneback.method(frame);
         cv::waitKey(3);
     }
     cv::destroyAllWindows();
