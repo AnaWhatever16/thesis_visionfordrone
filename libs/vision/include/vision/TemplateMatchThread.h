@@ -30,13 +30,16 @@ class TemplateMatchThread{
         /// \return center of image
         cv::Point2f getCenterImage(){return imgCenter_;}
 
+        cv::Rect getROI(){return roi_;}
+
     private:
         cv::Mat templ_;
         std::vector<cv::Mat> templResize_;
 
         cv::Point2f imgCenter_;
         cv::Point2f templCenter_;
-    
+        cv::Rect roi_;
+
     private: 
         cv::Mat selectTemplate(cv::Mat &_frame);
 };

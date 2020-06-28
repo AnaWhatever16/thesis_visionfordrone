@@ -27,7 +27,7 @@ int main (int argc, char **_argv){
     std::map<std::string, std::string> m;
     drone.init(m);
 
-    drone.takeOff(5);
+    drone.takeOff(10);
     
     Eigen::Vector3f vel(0,0,0); 
     float velx = 0, vely = 0;
@@ -39,10 +39,11 @@ int main (int argc, char **_argv){
 
     cv::destroyWindow("takeOff");
 
-    KCFTracker tracker(drone.droneImg_, 0);
+    // Eigen::Vector3f altitude (0, 0, 10); 
+    // drone.targetPosition(altitude, 0);
 
-    Eigen::Vector3f altitude (0, 0, 10); 
-    drone.targetPosition(altitude, 0);
+    //KCFTracker tracker(drone.droneImg_, 0, "/home/ana/programming/thesis_visionfordrone/images/templates/sq5.jpg");
+    KCFTracker tracker(drone.droneImg_, 0,"/home/ana/programming/thesis_visionfordrone/images/templates/mars.jpg");
 
     cv::Point2f ref;
     cv::Point2f pos;

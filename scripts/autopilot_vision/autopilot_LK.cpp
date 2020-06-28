@@ -14,10 +14,10 @@ int main (int argc, char **_argv){
     ros::init(argc, _argv, "AutopilotGL");
     AutopilotGL drone;
 
-    aerox::PID controlX(0.006,0.4,0,-std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
+    aerox::PID controlX(0.003,0.4,0,-std::numeric_limits<float>::max(), std::numeric_limits<float>::max(),
                                        std::numeric_limits<float>::min(),-std::numeric_limits<float>::min());
 
-    aerox::PID controlY(0.006,0.4,0,-std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), 
+    aerox::PID controlY(0.003,0.4,0,-std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), 
                                        std::numeric_limits<float>::min(),-std::numeric_limits<float>::min());
 
     //aerox::PID controlYaw(0,0,0);
@@ -40,6 +40,9 @@ int main (int argc, char **_argv){
     cv::destroyWindow("takeOff");
 
     LucasMethod tracker(drone.droneImg_);
+
+    Eigen::Vector3f altitude (0, 0, 10); 
+    drone.targetPosition(altitude, 0);
 
     cv::Point2f ref;
     cv::Point2f pos;

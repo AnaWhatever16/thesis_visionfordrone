@@ -110,9 +110,9 @@ double TemplateMatchThread::matchThread(cv::Mat &_input, int _matchMethod){
     cv::circle(img_display, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
     cv::circle(img_display, templCenter_, 1, cv::Scalar(0, 255, 0), 5);
 
-    rectangle(img_display, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
+    roi_ = cv::Rect(matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows));
+    rectangle(img_display, roi_, cv::Scalar::all(0), 2, 8, 0);
     imshow(image_window, img_display);
-
 
 
     return maxVal_act;

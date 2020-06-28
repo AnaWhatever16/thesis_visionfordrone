@@ -35,5 +35,5 @@ class LucasMethod{
 
     private:
         std::vector<cv::Point2f> goodTrackingFeatures(std::vector<cv::Point2f> &_p0);
-        void drawBoundBox(std::vector<cv::Point2f> &_p0, cv::Mat &_frame);
+        bool drawBoundBox(std::vector<cv::Point2f> &_p0, cv::Mat &_frame);
 };

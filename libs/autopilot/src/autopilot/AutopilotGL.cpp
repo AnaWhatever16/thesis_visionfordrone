@@ -24,6 +24,11 @@ bool AutopilotGL::init(std::map<std::string, std::string> _params) {
 }
         
 void AutopilotGL::targetPosition(const Eigen::Vector3f &_position, const float _yaw) {
+    grvc::ual::Waypoint wp;
+    wp.pose.position.x = _position(0);
+    wp.pose.position.y = _position(1);
+    wp.pose.position.z = _position(2);
+    ual_.goToWaypoint(wp);
 
 }
 

@@ -41,6 +41,9 @@ int main (int argc, char **_argv){
 
     FeatureMatching tracker(drone.droneImg_);
 
+    Eigen::Vector3f altitude (0, 0, 10); 
+    drone.targetPosition(altitude, 0);
+
     cv::Point2f ref;
     cv::Point2f pos;
 

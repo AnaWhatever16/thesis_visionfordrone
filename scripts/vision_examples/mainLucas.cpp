@@ -25,21 +25,31 @@
 #include <vision/LucasMethod.h>
 
 int main(int _argc, char **_argv){
+
+    cv::VideoCapture camera(0);
+    if (!camera.isOpened()) {
+        std::cerr << "ERROR: Could not open camera" << std::endl;
+        return 1;
+    }
+
     cv::Mat frame;
-    RealSenseCamera realSenseCamera(RealSenseCamera::RS_TYPE::D435);
+    camera >> frame;
+    // cv::Mat frame;
+    // RealSenseCamera realSenseCamera(RealSenseCamera::RS_TYPE::D435);
     
     std::cout << "Press ESC when image is ready for detection" << std::endl;
 
-    while((char)27!=cv::waitKey(1)){
-        realSenseCamera>>frame;
-        cv::imshow("RealSense Image", frame); 
-    }
-    cv::destroyWindow("RealSense Image");
+    // while((char)27!=cv::waitKey(1)){
+    //     realSenseCamera>>frame;
+    //     cv::imshow("RealSense Image", frame); 
+    // }
+    // cv::destroyWindow("RealSense Image");
 
     LucasMethod lucas(frame);
 
     while((char)27!=cv::waitKey(1)){
-        realSenseCamera>>frame;
+        camera >> frame;
+        // realSenseCamera>>frame;
         lucas.method(frame);
     }
 

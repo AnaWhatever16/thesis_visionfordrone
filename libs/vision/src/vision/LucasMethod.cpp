@@ -19,7 +19,7 @@ LucasMethod::LucasMethod(cv::Mat &_input){
     oldFrame_=_input;
     std::vector<cv::Point2f> p0Aux;
     cv::cvtColor(oldFrame_, oldGray_, cv::COLOR_BGR2GRAY);
-    cv::goodFeaturesToTrack(oldGray_, p0Aux, 100, 0.3, 7, cv::Mat(), 7, false, 0.04);
+    cv::goodFeaturesToTrack(oldGray_, p0Aux, 100, 0.15, 7, cv::Mat(), 7, false, 0.04);
     p0_ = goodTrackingFeatures(p0Aux);
     // Create a mask image for drawing purposes
     mask_ = cv::Mat::zeros(oldFrame_.size(), oldFrame_.type());
@@ -50,7 +50,11 @@ void LucasMethod::method(cv::Mat &_input){
 
     cv::Mat img;
     cv::add(frame, mask_, img);
-    drawBoundBox(good_new, img);
+    if(!drawBoundBox(good_new, img)){
+        objectCenter_ = imgCenter_;
+    }
+
+    cv::circle(img, imgCenter_, 1, cv::Scalar(0,0,0), 5);
     cv::imshow("Frame", img);
 
     // Now update the previous frame and previous points
@@ -80,14 +84,18 @@ std::vector<cv::Point2f> LucasMethod::goodTrackingFeatures(std::vector<cv::Point
     return pROI;
 }
 
-void LucasMethod::drawBoundBox(std::vector<cv::Point2f> &_p0, cv::Mat &_frame){
+bool LucasMethod::drawBoundBox(std::vector<cv::Point2f> &_p0, cv::Mat &_frame){
 
-    std::vector<cv::Point2f> hull;
-    cv::convexHull(_p0, hull, true);
-    cv::Rect bound = cv::boundingRect(hull);
+    if (_p0.size()>0){
+        std::vector<cv::Point2f> hull;
+        cv::convexHull(_p0, hull, true);
+        cv::Rect bound = cv::boundingRect(hull);
 
-    rectangle(_frame, bound, cv::Scalar(0, 255, 0), 4);
-    cv::Point2f corner = bound.tl();
-    objectCenter_= cv::Point2f(corner.x + bound.width/2, corner.y + bound.height/2);
-    cv::circle(_frame, objectCenter_, 1, cv::Scalar(0, 0, 0), 5);
+        rectangle(_frame, bound, cv::Scalar(0, 255, 0), 4);
+        cv::Point2f corner = bound.tl();
+        objectCenter_= cv::Point2f(corner.x + bound.width/2, corner.y + bound.height/2);
+        cv::circle(_frame, objectCenter_, 1, cv::Scalar(0, 0, 0), 5);
+        return true;
+    }
+    else return false;
 }

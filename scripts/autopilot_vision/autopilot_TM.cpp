@@ -46,6 +46,9 @@ int main (int argc, char **_argv){
 
     ref=tracker.getCenterImage();
 
+    Eigen::Vector3f altitude (0, 0, 10); 
+    drone.targetPosition(altitude, 0);
+    
     controlX.reference(ref.y);
     controlY.reference(ref.x);
     

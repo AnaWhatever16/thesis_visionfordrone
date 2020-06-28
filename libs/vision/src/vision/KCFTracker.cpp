@@ -19,7 +19,7 @@
 //---------------------------------------------------------------------------------------------------------------------
 
 #include <vision/KCFTracker.h>
-#include <vision/FeatureMatching.h>
+#include <vision/TemplateMatchThread.h>
 
 KCFTracker::KCFTracker(cv::Mat &_frame, bool _angle){
 
@@ -38,8 +38,8 @@ KCFTracker::KCFTracker(cv::Mat &_frame, bool _angle, std::string _template){
     
     tracker_ = cv::TrackerKCF::create();
 
-    FeatureMatching initDetect(_template);
-    initDetect.method(_frame);
+    TemplateMatchThread initDetect(_template);
+    initDetect.matchThread(_frame, cv::TM_CCOEFF_NORMED);
     roi_= initDetect.getROI();
     
     angle_=_angle;
@@ -112,11 +112,6 @@ bool KCFTracker::update(cv::Mat &_frame){
     mu = moments(scene_corners);
     objectSelected_= cv::Point2f (mu.m10/mu.m00, mu.m01/mu.m00);
     cv::circle(_frame, objectSelected_, 1, cv::Scalar(0, 255, 0), 5);
-
-    //Calculate image center 
-    float cx = _frame.cols/2;
-    float cy = _frame.rows/2;        
-    imgCenter_= cv::Point2f(cx , cy);
     cv::circle(_frame, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
 
     cv::imshow("tracker",_frame); // REMEMBER TO UNCOMMENT IF WE WANT IMAGE TO SHOW
