@@ -26,6 +26,9 @@ TemplateMatchThread::TemplateMatchThread(cv::Mat &_frame){
         resize(templ_, scaledTemplate, cv::Size(), (1-i*0.20), (1-i*0.20));
         templResize_.push_back(scaledTemplate.clone());
     }
+
+    imgCenter_ = cv::Point2f(_frame.cols/2, _frame.rows/2);
+
 }
 
 double TemplateMatchThread::matchThread(cv::Mat &_input, int _matchMethod){
@@ -101,12 +104,16 @@ double TemplateMatchThread::matchThread(cv::Mat &_input, int _matchMethod){
         }
     }
     
+    //imgCenter_ = cv::Point2f(img_display.cols/2, img_display.rows/2);
+    templCenter_ = cv::Point2f(matchLoc.x + cols/2, matchLoc.y + rows/2);
     //cvtColor(img_display, img_display, CV_RGB2BGR); //only for autopilot
+    cv::circle(img_display, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
+    cv::circle(img_display, templCenter_, 1, cv::Scalar(0, 255, 0), 5);
+
     rectangle(img_display, matchLoc, cv::Point(matchLoc.x + cols, matchLoc.y + rows), cv::Scalar::all(0), 2, 8, 0);
     imshow(image_window, img_display);
 
-    imgCenter_ = cv::Point2f(img_display.cols/2, img_display.rows/2);
-    templCenter_ = cv::Point2f(matchLoc.x + cols/2, matchLoc.y + rows/2);
+
 
     return maxVal_act;
 }

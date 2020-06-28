@@ -50,10 +50,16 @@ int main (int argc, char **_argv){
     controlY.reference(ref.x);
     
     aerox::RateCounter counter;
+    //int match_method=cv::TM_SQDIFF
+    //int match_method=cv::TM_SQDIFF_NORMED;
+    //int match_method=cv::TM_CCORR;
+    //int match_method=cv::TM_CCORR_NORMED
+    //int match_method=cv::TM_CCOEFF;
+    int match_method=cv::TM_CCOEFF_NORMED;
 
     while((char)27!=cv::waitKey(1)){
         //the axis of the drone are not the same as the axis of the image
-        tracker.matchThread(drone.droneImg_, )
+        tracker.matchThread(drone.droneImg_, match_method);
 
         pos=tracker.getObjectSelected();
 
