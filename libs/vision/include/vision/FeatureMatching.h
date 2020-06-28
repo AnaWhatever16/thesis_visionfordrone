@@ -22,6 +22,7 @@
 #include <opencv2/features2d.hpp>
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
+#include "opencv2/xfeatures2d.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
 #include <opencv2/imgproc.hpp>
@@ -49,11 +50,11 @@ class FeatureMatching{
 
         /// Function to get point where the center of the template is
         /// \return center of template
-        cv::Point2f getRef(){return ref_;}
+        cv::Point2f getObjectSelected(){return ref_;}
 
         /// Function to get point where the center of the image is
         /// \return center of image
-        cv::Point2f getPos(){return imgCenter_;}
+        cv::Point2f getCenterImage(){return imgCenter_;}
 
         cv::Rect getROI(){return bound_;}
 

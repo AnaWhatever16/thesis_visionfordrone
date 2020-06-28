@@ -32,7 +32,7 @@ FeatureMatching::FeatureMatching(std::string _argv){
     //Matcher without filter
     matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
     //Matcher with filter
-    //matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
+    //matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
 }
 
 FeatureMatching::FeatureMatching(cv::Mat &_frame){
@@ -44,7 +44,9 @@ FeatureMatching::FeatureMatching(cv::Mat &_frame){
     //Matcher without filter
     matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE);
     //Matcher with filter
-    //matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
+    //matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
+
+    imgCenter_ = cv::Point2f(_frame.cols/2, _frame.rows/2);
 }
 
 void FeatureMatching::method(cv::Mat &_input){
@@ -83,15 +85,12 @@ void FeatureMatching::matching(cv::Mat &_img){
         //-- Show detected matches
         drawBoundBox(good_matches, img_matches);
 
-        float cx = (img_matches.cols-templ_.cols)/2 + templ_.cols;
-        float cy = img_matches.rows/2;
-        imgCenter_= cv::Point2f(cx , cy);
         cv::circle(img_matches, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
 
-        //imshow("Resultado", img_matches );
+        imshow("Resultado", img_matches );
     }
     else{
-        //imshow("Resultado", _img);
+        imshow("Resultado", _img);
     }
 }
 void FeatureMatching::drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::Mat &_imgMatches){

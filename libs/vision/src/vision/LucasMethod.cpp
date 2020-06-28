@@ -24,6 +24,7 @@ LucasMethod::LucasMethod(cv::Mat &_input){
     // Create a mask image for drawing purposes
     mask_ = cv::Mat::zeros(oldFrame_.size(), oldFrame_.type());
     criteria_ = cv::TermCriteria((cv::TermCriteria::COUNT) + (cv::TermCriteria::EPS), 50, 0.03); //originally 10, 0.03
+    imgCenter_ = cv::Point2f(_input.cols/2, _input.rows/2);
 }
 
 void LucasMethod::method(cv::Mat &_input){
@@ -75,6 +76,7 @@ std::vector<cv::Point2f> LucasMethod::goodTrackingFeatures(std::vector<cv::Point
             pROI.push_back(_p0[i]);
         }
     }
+
     return pROI;
 }
 
@@ -85,4 +87,7 @@ void LucasMethod::drawBoundBox(std::vector<cv::Point2f> &_p0, cv::Mat &_frame){
     cv::Rect bound = cv::boundingRect(hull);
 
     rectangle(_frame, bound, cv::Scalar(0, 255, 0), 4);
+    cv::Point2f corner = bound.tl();
+    objectCenter_= cv::Point2f(corner.x + bound.width/2, corner.y + bound.height/2);
+    cv::circle(_frame, objectCenter_, 1, cv::Scalar(0, 0, 0), 5);
 }
