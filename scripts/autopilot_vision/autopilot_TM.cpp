@@ -2,7 +2,7 @@
 #include <autopilot/AutopilotGL.h>
 #include <autopilot/PID.h>
 #include <autopilot/RateCounter.h>
-#include <vision/KCFTracker.h>
+#include <vision/TemplateMatchThread.h>
 
 #include <iostream>
 #include <unistd.h>
@@ -39,7 +39,7 @@ int main (int argc, char **_argv){
 
     cv::destroyWindow("takeOff");
 
-    KCFTracker tracker(drone.droneImg_, 0);
+    TemplateMatchThread tracker(drone.droneImg_);
 
     cv::Point2f ref;
     cv::Point2f pos;
@@ -53,10 +53,7 @@ int main (int argc, char **_argv){
 
     while((char)27!=cv::waitKey(1)){
         //the axis of the drone are not the same as the axis of the image
-        if(!tracker.update(drone.droneImg_)){
-            std::cout << "The target has been lost..."<< std::endl;
-            break;
-        }
+        tracker.matchThread(drone.droneImg_, )
 
         pos=tracker.getObjectSelected();
 

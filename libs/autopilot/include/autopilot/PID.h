@@ -10,7 +10,7 @@
 //  intellectual and technical concepts contained herein are proprietary to Vertical Engineering Solutions 
 //  and its suppliers and may be covered by UE and Foreign Patents, patents in process, and are protected 
 //  by trade secret or copyright law. Dissemination of this information or reproduction of this material is 
-//  strictly forbidden unless prior written permission is obtained from Vertical Engineering Solutions.
+//  strictly forbidden unless prior written permission is obtained from Adobe Systems Incorporated.
 //
 //---------------------------------------------------------------------------------------------------------------------
 //
@@ -21,82 +21,58 @@
 
 #include <limits>
 #include <thread>
-#include <functional>
 
-#include <cmath>
-#include <vector>
 
 namespace aerox{
-
     class PID {
     public:
         struct PIDParams{
             float kp, ki, kd, sat, wind;
         };
 
-        enum class AntiWindupMethod { None, Saturation, BackCalculation, Clamping};
-
         PID(float _kp, float _ki, float _kd,
-            float _minSat = -99999,
-            float _maxSat = 99999 );
+            float _minSat = std::numeric_limits<float>::min(),
+            float _maxSat = std::numeric_limits<float>::max(),
+            float _minWind = std::numeric_limits<float>::min(),
+            float _maxWind = std::numeric_limits<float>::max());
         
-        void setAntiWindup(AntiWindupMethod _antiWindup, std::vector<float> _params = {});
-
         float update(float _val, float _incT);
-        
-        void distanceFunction(std::function<float(float,float)> _fn) { distanceFn_ = _fn; };
-
-        float reference() { return reference_; }
-        void reference(float _ref, bool _reset = true);
-
-        float kp() const { return kp_; }
-        float ki() const { return ki_; }
-        float kd() const { return kd_; }
     
-        void kp(float _kp) { kp_ = _kp; }
-        void ki(float _ki) { 
-            // Scale accumulated error to prevent abrupt changes in integral component of control signal
-            accumErr_ *=ki_/_ki;    
-            ki_ = _ki; 
-        }
-        void kd(float _kd) { kd_ = _kd; }
-    
-        void setSaturations(float _min, float _max) { minSat_ = _min; maxSat_ = _max; }
-        void getSaturations(float &_min, float &_max) { _min = minSat_; _max = maxSat_; }
-    
-        void setWindupTerms(float _min, float _max) { minWindup_ = _min; maxWindup_ = _max; }
-        void getWindupTerms(float &_min, float &_max) { _min = minWindup_; _max = maxWindup_; }
+        void enableRosPublisher(std::string _topic);
+        void enableRosSubscriber(std::string _topic);
+        void enableFastcomPublisher(int _port);
+        void enableFastcomSubscriber(int _port);
 
-    public:
-        static float EuclideanDistance(float _a, float _b);
-        static float AngularDistance(float _a, float _b);
-
-    private:    // AntiWindUp implementations
-        float updateAWU_None(float _val, float _incT);
-        float updateAWU_Saturation(float _val, float _incT);
-        float updateAWU_BackCalculation(float _val, float _incT);
-        float updateAWU_Clamping(float _val, float _incT);
+        float reference() { return mReference; }
+        void reference(float _ref) { mReference = _ref; mAccumErr = 0; mLastError = 0; mLastResult = 0; mBouncingFactor = 0.1;}
+    
+        float kp() const { return mKp; }
+        float ki() const { return mKi; }
+        float kd() const { return mKd; }
+    
+        void kp(float _kp) { mKp = _kp; }
+        void ki(float _ki) { mKi = _ki; }
+        void kd(float _kd) { mKd = _kd; }
+    
+        void setSaturations(float _min, float _max) { mMinSat = _min; mMaxSat = _max; }
+        void getSaturations(float _min, float _max) { _min = mMinSat; _max = mMaxSat; }
+    
+        void setWindupTerms(float _min, float _max) { mWindupMin = _min; mWindupMax = _max; }
+        void getWindupTerms(float _min, float _max) { _min = mWindupMin; _max = mWindupMax; }
 
     private:
-        float reference_;
-        float kp_, ki_, kd_;
-        float minSat_, maxSat_;
-        float lastResult_ = 0, lastError_ = 0, accumErr_ = 0;
-        double bouncingFactor_ = 0.1;
-
-        // Params related with antiwindups
-        // Saturation
-        float minWindup_, maxWindup_;
-        // BackCalculation
-        float lastBackCalculation_ = 0;
-        float backCalculationCte_ = 1;
-        // Clamping
-        bool clampFactor_ = 1;
-
-
-        std::function<float(float, float)> distanceFn_ = EuclideanDistance; // default euclidean distance
-        std::function<float(float, float)> updateFn_;
+        float mReference;
+        float mKp, mKi, mKd;
+        float mMinSat, mMaxSat;
+        float mWindupMin, mWindupMax;
+        float mLastResult, mLastError, mAccumErr;
+        double mBouncingFactor = 0.1;
+        bool run_ = false;
+        std::thread mParamPubThread;
+        int mPort;
+        int ignoreCounter = 0;
     };
 
 }
+
 

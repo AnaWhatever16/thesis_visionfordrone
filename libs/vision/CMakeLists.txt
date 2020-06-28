@@ -8,7 +8,7 @@ add_library(vision STATIC ${VISION_HDR} ${VISION_SRC})
 target_include_directories(vision PUBLIC "include")
 
 # OpenCV
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 4.2.0 REQUIRED)
 set_target_properties(${OpenCV_LIBS} PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
 
 target_include_directories(vision PUBLIC ${OpenCV_INCLUDE_DIRS})

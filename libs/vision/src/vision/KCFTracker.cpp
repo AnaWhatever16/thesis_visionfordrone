@@ -91,21 +91,21 @@ bool KCFTracker::update(cv::Mat &_frame){
     std::vector<cv::Point2f> scene_corners(4);
     scene_corners = calcRoi(); 
 
-    if(angle_){
+    // if(angle_){
 
-        cv::Mat scene;
-        scene=_frame(cv::Range(scene_corners[0].y, scene_corners[2].y), 
-                        cv::Range(scene_corners[0].x, scene_corners[2].x));
+    //     cv::Mat scene;
+    //     scene=_frame(cv::Range(scene_corners[0].y, scene_corners[2].y), 
+    //                     cv::Range(scene_corners[0].x, scene_corners[2].x));
 
-        std::vector<cv::Vec4i> vecActual;
-        vecActual = computeCandidateLines(scene);
-        anglePos_ = angleDetect->detect(vecActual, scene);
+    //     std::vector<cv::Vec4i> vecActual;
+    //     vecActual = computeCandidateLines(scene);
+    //     anglePos_ = angleDetect->detect(vecActual, scene);
 
-        //cv::waitKey(3); //for debug in case we hace more images showing in windows
+    //     //cv::waitKey(3); //for debug in case we hace more images showing in windows
 
-        std::cout << "Error angle: " << anglePos_ << std::endl;
+    //     std::cout << "Error angle: " << anglePos_ << std::endl;
 
-    }
+    // }
 
     //Calculate centroid of object
     cv::Moments mu;

@@ -22,7 +22,21 @@ class TemplateMatchThread{
         /// \param _matchMethod score calculation method. Methods that can be used can be found <a href=https://docs.opencv.org/master/df/dfb/group__imgproc__object.html#ga3a7850640f1fe1f58fe91a2d7583695d>here</a>.
         double matchThread(cv::Mat &_input, int _matchMethod);
 
+        /// Function to get point where the center of the template is
+        /// \return center of template
+        cv::Point2f getObjectSelected(){return templCenter_;}
+
+        /// Function to get point where the center of the image is
+        /// \return center of image
+        cv::Point2f getCenterImage(){return imgCenter_;}
+
     private:
         cv::Mat templ_;
         std::vector<cv::Mat> templResize_;
+
+        cv::Point2f imgCenter_;
+        cv::Point2f templCenter_;
+    
+    private: 
+        cv::Mat selectTemplate(cv::Mat &_frame);
 };
