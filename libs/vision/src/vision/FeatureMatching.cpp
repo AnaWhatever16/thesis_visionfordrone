@@ -46,7 +46,7 @@ FeatureMatching::FeatureMatching(cv::Mat &_frame){
     //Matcher with filter
     //matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
 
-    imgCenter_ = cv::Point2f(_frame.cols/2, _frame.rows/2);
+    imgCenter_ = cv::Point2f(_frame.cols/2 + templ_.cols, _frame.rows/2);
 }
 
 void FeatureMatching::method(cv::Mat &_input){
@@ -83,7 +83,10 @@ void FeatureMatching::matching(cv::Mat &_img){
         drawMatches( templ_, keypointsTempl_, _img, keypointsImg_, good_matches, img_matches, cv::Scalar::all(-1),
                     cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
         //-- Show detected matches
-        drawBoundBox(good_matches, img_matches);
+        if(!drawBoundBox(good_matches, img_matches)){
+            ref_ = imgCenter_;
+            cv::circle(img_matches, ref_, 1, cv::Scalar(0, 0, 0), 5);
+        }
 
         cv::circle(img_matches, imgCenter_, 1, cv::Scalar(0, 0, 255), 5);
 
@@ -93,7 +96,7 @@ void FeatureMatching::matching(cv::Mat &_img){
         imshow("Resultado", _img);
     }
 }
-void FeatureMatching::drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::Mat &_imgMatches){
+bool FeatureMatching::drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::Mat &_imgMatches){
     //-- Localize the object
     std::vector<cv::Point2f> obj;
     std::vector<cv::Point2f> scene;
@@ -104,29 +107,36 @@ void FeatureMatching::drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::M
         scene.push_back( keypointsImg_[ _good_matches[i].trainIdx ].pt );
     }
 
-    std::vector<cv::Point2f> hull;
-    cv::convexHull(scene, hull, true);
-    bound_ = cv::boundingRect(hull);
-    cv::Point2f ctl = bound_.tl();
-    cv::Point2f cbr = bound_.br();
-    cv::Size siz = bound_.size();
-    cv::Point2f cbl = ctl + cv::Point2f(0, siz.height); 
-    cv::Point2f ctr = ctl + cv::Point2f(siz.width, 0);
+    if (scene.size() > 0){
+        std::vector<cv::Point2f> hull;
+        cv::convexHull(scene, hull, true);
+        bound_ = cv::boundingRect(hull);
+        cv::Point2f ctl = bound_.tl();
+        cv::Point2f cbr = bound_.br();
+        cv::Size siz = bound_.size();
+        cv::Point2f cbl = ctl + cv::Point2f(0, siz.height); 
+        cv::Point2f ctr = ctl + cv::Point2f(siz.width, 0);
 
-    std::vector<cv::Point2f> scene_corners(4);
-    scene_corners[0]=ctl; scene_corners[1]= ctr;
-    scene_corners[2]= cbr; scene_corners[3]= cbl;
+        std::vector<cv::Point2f> scene_corners(4);
+        scene_corners[0]=ctl; scene_corners[1]= ctr;
+        scene_corners[2]= cbr; scene_corners[3]= cbl;
 
-    rectangle( _imgMatches, ctl + cv::Point2f( templ_.cols, 0), cbr + cv::Point2f( templ_.cols, 0), cv::Scalar(0, 255, 0), 4);
+        rectangle( _imgMatches, ctl + cv::Point2f( templ_.cols, 0), cbr + cv::Point2f( templ_.cols, 0), cv::Scalar(0, 255, 0), 4);
 
-    //Calculate centroid
-    cv::Moments mu;
-    mu = moments(scene_corners);
-    cv::Point2f c(mu.m10/mu.m00, mu.m01/mu.m00);
+        //Calculate centroid
+        cv::Moments mu;
+        mu = moments(scene_corners);
+        cv::Point2f c(mu.m10/mu.m00, mu.m01/mu.m00);
 
-    ref_= c + cv::Point2f( templ_.cols, 0);
+        ref_= c + cv::Point2f( templ_.cols, 0);
+        cv::circle(_imgMatches, ref_, 1, cv::Scalar(0, 0, 0), 5);
 
-    cv::circle(_imgMatches, ref_, 1, cv::Scalar(0, 0, 0), 5);
+        return true;
+    }
+    else{
+        return false;
+    }
+
 }
 
 cv::Mat FeatureMatching::selectTemplate(cv::Mat &_frame){

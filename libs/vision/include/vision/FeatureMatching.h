@@ -76,7 +76,7 @@ class FeatureMatching{
     private:
         void detection(cv::Mat &_input, std::vector<cv::KeyPoint> &_keypoints, cv::Mat &_descriptors);
         void matching(cv::Mat &_img);
-        void drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::Mat &_imgMatches);
+        bool drawBoundBox(std::vector<cv::DMatch> &_good_matches, cv::Mat &_imgMatches);
         cv::Mat selectTemplate(cv::Mat &_frame);
         cv::Rect bound_;
     
